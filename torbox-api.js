@@ -1,8 +1,10 @@
 const fs = require('fs')
 const url = require('url')
 const path = require('path')
+const crypto = require('crypto')
 const request = require('request')
 const express = require('express')
+const bencode = require('bencode')
 
 const app = express()
 
@@ -38,9 +40,25 @@ app.post('/addTorrent', (req, res) => {
             .on('error', (err) => {
                 res.status(500).send()
             })
-            .on('close', () => {
+            .on('ready', () => {
                 res.status(200).send()
             }))
+
+        // hash check first (Working, but wrong input)
+
+        // let hash = crypto.createHash('sha1')
+        // hash.setEncoding('hex')
+        
+        // requestFile.on('end', () => {
+        //     hash.end()
+        //     console.log(hash.read())
+        //     res.status(200).send()
+        // })
+        // requestFile.on('error', (err) => {
+        //     res.status(500).send()
+        // })
+
+        // requestFile.pipe(hash)
 
     })
 

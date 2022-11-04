@@ -5,6 +5,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 token = '***REMOVED***'
+torboxKey = '***REMOVED***'
 
 res = requests.get(f"http://brokeserver.live:32400/library/sections/1/all?X-Plex-Token={token}")
 file = io.StringIO(res.text)
@@ -38,6 +39,7 @@ def yify(endpoint, **kwargs):
 """
 Searches the Plex Movie library for the given title, taking into consideration different title formats with fuzzy mathcing.
     - Looks for an accuracy threshold of above 75% to consider a match. Can be adjusted optionally
+        - Loljk, only looking for exact titles, fuck it
 """
 def inPlexLibrary(title, accuracy=75):
     title = title.lower()
@@ -47,7 +49,14 @@ def inPlexLibrary(title, accuracy=75):
             return True
     return False
 
-    
+def download(url):
+    torboxURL = 'http://localhost:4004/addTorrent'
+    data = {
+        'key': torboxKey,
+        'url': url
+    }
+    res = requests.post(torboxURL, json = data)
+
 
 if __name__ == '__main__':
 
@@ -58,10 +67,16 @@ if __name__ == '__main__':
     for i, show in enumerate(shows):
         print(f"{i}: {show.attributes['title'].value}")
 
-    response_dict = yify("list_movies", sort_by="download_count", limit=50)
+    response_dict = yify("list_movies", quality="1080p", sort_by="rating", limit=5)
     for movie in response_dict['data']['movies']:
         if not inPlexLibrary(movie['title']):
             print(movie['title'])
+            for torrent in movie['torrents']:
+                if torrent['quality'] == '1080p' and (torrent['type'] == 'bluray' or torrent['type'] == 'web'):
+                    print(torrent['hash'])
+                    download(torrent['url'])
+
+                    break
             
     ...
 
