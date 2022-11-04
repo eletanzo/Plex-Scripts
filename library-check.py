@@ -42,7 +42,8 @@ Searches the Plex Movie library for the given title, taking into consideration d
 def inPlexLibrary(title, accuracy=75):
     title = title.lower()
     for movie in movies:
-        if fuzz.partial_ratio(title, movie.attributes['title'].value.lower()) >= 75:
+        # if fuzz.partial_ratio(title, movie.attributes['title'].value.lower()) >= 75:
+        if title == movie.attributes['title'].value.lower():
             return True
     return False
 
