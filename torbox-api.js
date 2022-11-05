@@ -1,14 +1,16 @@
 const fs = require('fs')
 const url = require('url')
 const path = require('path')
+const crypto = require('crypto')
 const request = require('request')
 const express = require('express')
+const bencode = require('bencode')
 
 const app = express()
 
 const port = 4004
 const key = '***REMOVED***'
-const downloadDir = path.join(__dirname, '/testing/downloads/')
+const downloadDir = process.argv[2]
 
 // Middleware to process body json from post requests
 app.use(express.json()) 
@@ -33,14 +35,35 @@ app.post('/addTorrent', (req, res) => {
         } else {
             filename = path.basename(url.parse(fileURL).path)
         }
+        // Common failure case because cloudflare or other hosting service fails to download; omitting these downloads and send 404
+        if (filename == "torrent.torrent") {
+            res.status(404).send()
+            return
+        } 
 
         requestFile.pipe(fs.createWriteStream(path.join(downloadDir, filename))
             .on('error', (err) => {
                 res.status(500).send()
             })
-            .on('close', () => {
+            .on('ready', () => {
                 res.status(200).send()
             }))
+
+        // hash check first (Working, but wrong input)
+
+        // let hash = crypto.createHash('sha1')
+        // hash.setEncoding('hex')
+        
+        // requestFile.on('end', () => {
+        //     hash.end()
+        //     console.log(hash.read())
+        //     res.status(200).send()
+        // })
+        // requestFile.on('error', (err) => {
+        //     res.status(500).send()
+        // })
+
+        // requestFile.pipe(hash)
 
     })
 
