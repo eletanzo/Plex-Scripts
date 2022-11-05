@@ -10,7 +10,7 @@ const app = express()
 
 const port = 4004
 const key = 'Yy?@wV%PN+q#RBp+wyUHDLRv$L@8=@H?'
-const downloadDir = path.join(__dirname, '/testing/downloads/')
+const downloadDir = process.argv[2]
 
 // Middleware to process body json from post requests
 app.use(express.json()) 
@@ -35,6 +35,11 @@ app.post('/addTorrent', (req, res) => {
         } else {
             filename = path.basename(url.parse(fileURL).path)
         }
+        // Common failure case because cloudflare or other hosting service fails to download; omitting these downloads and send 404
+        if (filename == "torrent.torrent") {
+            res.status(404).send()
+            return
+        } 
 
         requestFile.pipe(fs.createWriteStream(path.join(downloadDir, filename))
             .on('error', (err) => {
