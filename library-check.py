@@ -3,6 +3,7 @@ import io
 import sys
 from xml.dom import minidom
 
+
 token = ''
 torbox_key = ''
 
