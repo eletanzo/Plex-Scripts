@@ -3,11 +3,12 @@ import io
 import sys
 from xml.dom import minidom
 
-token = '7e_C17zcFPXZ42MEZw1j'
-torbox_key = 'Yy?@wV%PN+q#RBp+wyUHDLRv$L@8=@H?'
 
-plex_ip = '10.1.90.11'
-torbox_api_ip = '10.1.60.1'
+token = ''
+torbox_key = ''
+
+plex_ip = ''
+torbox_api_ip = ''
 torbox_port = 4004
 
 res = requests.get(f"http://{plex_ip}:32400/library/sections/1/all?X-Plex-Token={token}")
