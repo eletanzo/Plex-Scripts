@@ -9,7 +9,7 @@ const bencode = require('bencode')
 const app = express()
 
 const port = 4004
-const key = '***REMOVED***'
+const key = ''
 const downloadDir = process.argv[2]
 
 // Middleware to process body json from post requests
